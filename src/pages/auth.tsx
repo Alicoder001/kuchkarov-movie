@@ -1,12 +1,25 @@
 import Head from "next/head";
 import Image from "next/image";
 import React, { useState } from "react";
-
+import { TextFild } from "src/components";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 const Auth = () => {
   const [auth, setAuth] = useState<"signin" | "signup">("signin");
   const toggleAuth = (state: "signin" | "signup") => {
     setAuth(state);
   };
+  const onSubmit = (formData: { email: string; password: string }) => {
+    console.log(formData);
+  };
+  const validation = Yup.object({
+    email: Yup.string()
+      .email("Enter valid email!")
+      .required("Email is required!"),
+    password: Yup.string()
+      .min(4, "4 minimum character!")
+      .required("Password is required!"),
+  });
   return (
     <div className="relative  flex flex-col h-screen w-screen md:items-center md:justify-center bg-black md:bg-transparent">
       <Head>
@@ -31,54 +44,60 @@ const Auth = () => {
         height={70}
         className="absolute left-4 cursor-pointer object-contain block top-4"
       />
-      <form className="relative mt-24 space-y-8 rounded bg-black/75 py-10 px-6 md:mt-0 md:max-w-md md:px-14 ">
-        <h1 className="text-4xl font-semibold">
-          {auth === "signin" ? "Sign In" : "Sign Up"}
-        </h1>
-        <div className="space-y-4">
-          <label className="inline-block w-full">
-            <input type="text" placeholder="Email" className="input" />
-          </label>
-          <label className="inline-block w-full">
-            <input type="password" placeholder="Password" className="input" />
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-[#e10856] py-3 font-semibold rounded"
+
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        onSubmit={onSubmit}
+        validationSchema={validation}
+      >
+        <Form
+          placeholder={"form"}
+          className="relative mt-24 space-y-8 rounded bg-black/75 py-10 px-6 md:mt-0 md:max-w-md md:px-14 "
         >
-          {auth === "signin" ? "Sign In" : "Sign Up"}
-        </button>
-        {auth === "signin" ? (
-          <div className="text-[gray]">
-            Not yet account?{" "}
-            <button
-              onClick={() => {
-                toggleAuth("signup");
-              }}
-              type="button"
-              className="hover:underline text-white"
-            >
-              {" "}
-              Sign Up Now
-            </button>
+          <h1 className="text-4xl font-semibold">
+            {auth === "signin" ? "Sign In" : "Sign Up"}
+          </h1>
+          <div className="space-y-4">
+            <TextFild name="email" type="email" placeholder="Email" />
+            <TextFild name="password" type="password" placeholder="Password" />
           </div>
-        ) : (
-          <div className="text-[gray]">
-            Already have account?{" "}
-            <button
-              onClick={() => {
-                toggleAuth("signin");
-              }}
-              type="button"
-              className="hover:underline text-white"
-            >
-              {" "}
-              Sign In
-            </button>
-          </div>
-        )}
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-[#e10856] py-3 font-semibold rounded"
+          >
+            {auth === "signin" ? "Sign In" : "Sign Up"}
+          </button>
+          {auth === "signin" ? (
+            <div className="text-[gray]">
+              Not yet account?{" "}
+              <button
+                onClick={() => {
+                  toggleAuth("signup");
+                }}
+                type="button"
+                className="hover:underline text-white"
+              >
+                {" "}
+                Sign Up Now
+              </button>
+            </div>
+          ) : (
+            <div className="text-[gray]">
+              Already have account?{" "}
+              <button
+                onClick={() => {
+                  toggleAuth("signin");
+                }}
+                type="button"
+                className="hover:underline text-white"
+              >
+                {" "}
+                Sign In
+              </button>
+            </div>
+          )}
+        </Form>
+      </Formik>
     </div>
   );
 };
