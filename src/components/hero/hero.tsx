@@ -14,16 +14,22 @@ const Hero = ({ trending }: HeroProps): JSX.Element => {
   }, []);
 
   return (
-    <div className="flex  flex-col space-y-2 py-20 md:space-y-4 lg:h-[65vh] lg:pb-12 lg:justify-end">
+    <div className="space-y-2  md:space-y-4 lg:h-[65vh] lg:justify-end">
       <div className="absolute top-0 left-0  h-[95vh] w-full -z-10">
         <Image
+          priority={true}
           src={`${image_base}${movie.backdrop_path || movie.poster_path}`}
-          alt={movie.title}
+          alt={`${
+            movie?.title ||
+            movie?.name ||
+            movie.original_title ||
+            movie.original_name
+          }`}
           fill
           className="object-cover"
         />
       </div>
-      <div className="px-[8px] py-[4px]  text-center justify-center rounded-bl-[8px] rounded-tr-[8px] bg-[#1d1d1d]/50 w-[111px]">
+      <div className="px-[8px] py-[4px]  text-center justify-center rounded-bl-[8px] rounded-tr-[8px] bg-[#e5e5e5]/50 w-[111px]">
         {movie.media_type}
       </div>
       <div className="flex items-center space-x-2">
@@ -35,7 +41,7 @@ const Hero = ({ trending }: HeroProps): JSX.Element => {
         />
         <p>({movie.vote_count})</p>
       </div>
-      <h1 className="text-2xl font-bold md:text-4xl lg:text-7xl">
+      <h1 className="text-2xl font-bold md:text-4xl lg:text-6xl">
         {movie?.title ||
           movie?.name ||
           movie.original_title ||
