@@ -4,7 +4,7 @@ import { ErrorMessage, FieldHookConfig, useField } from "formik";
 
 const TextFild = ({ ...props }: TextFildProps & FieldHookConfig<string>) => {
   const [field, meta, helpers] = useField(props);
-  console.log(meta);
+
   return (
     <div className="w-full inline-block">
       <label

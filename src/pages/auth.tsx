@@ -1,16 +1,20 @@
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { TextFild } from "src/components";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { AuthContext, AuthContextState } from "src/context/auth.context";
 const Auth = () => {
   const [auth, setAuth] = useState<"signin" | "signup">("signin");
+  const { error, isLoading, logOut, signIn, signUp } = useContext(AuthContext);
   const toggleAuth = (state: "signin" | "signup") => {
     setAuth(state);
   };
   const onSubmit = (formData: { email: string; password: string }) => {
-    console.log(formData);
+    if (auth === "signin") {
+      signIn(formData.email, formData.password);
+    } else signUp(formData.email, formData.password);
   };
   const validation = Yup.object({
     email: Yup.string()
@@ -57,15 +61,23 @@ const Auth = () => {
           <h1 className="text-4xl font-semibold">
             {auth === "signin" ? "Sign In" : "Sign Up"}
           </h1>
+          {error && (
+            <p className="text-red-500 font-semibold text-center">{error}</p>
+          )}
           <div className="space-y-4">
             <TextFild name="email" type="email" placeholder="Email" />
             <TextFild name="password" type="password" placeholder="Password" />
           </div>
           <button
+            disabled={isLoading}
             type="submit"
             className="w-full bg-[#e10856] py-3 font-semibold rounded"
           >
-            {auth === "signin" ? "Sign In" : "Sign Up"}
+            {isLoading
+              ? "Loading..."
+              : auth === "signin"
+              ? "Sign In"
+              : "Sign Up"}
           </button>
           {auth === "signin" ? (
             <div className="text-[gray]">
