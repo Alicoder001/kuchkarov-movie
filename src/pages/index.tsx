@@ -1,9 +1,11 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { userInfo } from "os";
 import { useEffect } from "react";
 import { Header, Hero, Row } from "src/components";
 import { IMovie } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
+import { useInfoState } from "src/store";
 
 export default function Home({
   trending,
@@ -15,6 +17,8 @@ export default function Home({
   family,
   history,
 }: HomeProps): JSX.Element {
+  const { setModal, modal } = useInfoState();
+  console.log(modal);
   return (
     <div className="relative h-[200vh]">
       <Head>
@@ -48,6 +52,13 @@ export default function Home({
           <Row title="History" movies={history}></Row>
         </section>
       </main>
+      <button
+        onClick={() => {
+          setModal(true);
+        }}
+      >
+        Click
+      </button>
     </div>
   );
 }
