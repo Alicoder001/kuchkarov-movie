@@ -52,42 +52,42 @@ export default function Home({
   );
 }
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const trending = await fetch(API_REQUEST.trending).then((res) =>
-    res.json().catch((error) => {
+  const trending = await fetch(API_REQUEST.trending)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
-  const topRated = await fetch(API_REQUEST.top_rated).then((res) =>
-    res.json().catch((error) => {
+    });
+  const topRated = await fetch(API_REQUEST.top_rated)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
-  const tvTopRated = await fetch(API_REQUEST.tv_top_rated).then((res) =>
-    res.json().catch((error) => {
+    });
+  const tvTopRated = await fetch(API_REQUEST.tv_top_rated)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
+    });
   const popular = await fetch(API_REQUEST.popular).then((res) => res.json());
-  const documentary = await fetch(API_REQUEST.documentary).then((res) =>
-    res.json().catch((error) => {
+  const documentary = await fetch(API_REQUEST.documentary)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
-  const comedy = await fetch(API_REQUEST.comedy).then((res) =>
-    res.json().catch((error) => {
+    });
+  const comedy = await fetch(API_REQUEST.comedy)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
-  const family = await fetch(API_REQUEST.family).then((res) =>
-    res.json().catch((error) => {
+    });
+  const family = await fetch(API_REQUEST.family)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
-  const history = await fetch(API_REQUEST.history).then((res) =>
-    res.json().catch((error) => {
+    });
+  const history = await fetch(API_REQUEST.history)
+    .then((res) => res.json())
+    .catch((error) => {
       console.log(error);
-    })
-  );
+    });
   return {
     props: {
       trending: trending.results,

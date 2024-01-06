@@ -5,12 +5,20 @@ import { TextFild } from "src/components";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { AuthContext, AuthContextState } from "src/context/auth.context";
+import { useRouter } from "next/router";
 const Auth = () => {
+  const router = useRouter();
   const [auth, setAuth] = useState<"signin" | "signup">("signin");
-  const { error, isLoading, logOut, signIn, signUp } = useContext(AuthContext);
+  const { user, error, isLoading, logOut, signIn, signUp } =
+    useContext(AuthContext);
   const toggleAuth = (state: "signin" | "signup") => {
     setAuth(state);
   };
+
+  if (user) {
+    router.push("/");
+  }
+
   const onSubmit = (formData: { email: string; password: string }) => {
     if (auth === "signin") {
       signIn(formData.email, formData.password);

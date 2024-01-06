@@ -55,5 +55,14 @@ export const useAuth = () => {
       });
   };
 
-  return { user, isLoading, error, signUp, signIn, logOut };
+  return {
+    user,
+    isLoading,
+    error,
+    signUp,
+    signIn,
+    logOut,
+    setUser,
+    setIsLoading,
+  };
 };
