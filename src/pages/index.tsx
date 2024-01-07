@@ -1,8 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { userInfo } from "os";
-import { useEffect } from "react";
-import { Header, Hero, Row } from "src/components";
+import { Header, Hero, Modal, Row } from "src/components";
 import { IMovie } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
 import { useInfoState } from "src/store";
@@ -52,53 +50,31 @@ export default function Home({
           <Row title="History" movies={history}></Row>
         </section>
       </main>
-      <button
-        onClick={() => {
-          setModal(true);
-        }}
-      >
-        Click
-      </button>
+      {modal && <Modal />}
     </div>
   );
 }
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const trending = await fetch(API_REQUEST.trending)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const topRated = await fetch(API_REQUEST.top_rated)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const tvTopRated = await fetch(API_REQUEST.tv_top_rated)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const popular = await fetch(API_REQUEST.popular).then((res) => res.json());
-  const documentary = await fetch(API_REQUEST.documentary)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const comedy = await fetch(API_REQUEST.comedy)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const family = await fetch(API_REQUEST.family)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-  const history = await fetch(API_REQUEST.history)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
+  const [
+    trending,
+    topRated,
+    tvTopRated,
+    popular,
+    documentary,
+    comedy,
+    family,
+    history,
+  ] = await Promise.all([
+    fetch(API_REQUEST.trending).then((res) => res.json()),
+    fetch(API_REQUEST.top_rated).then((res) => res.json()),
+    fetch(API_REQUEST.tv_top_rated).then((res) => res.json()),
+    fetch(API_REQUEST.popular).then((res) => res.json()),
+    fetch(API_REQUEST.documentary).then((res) => res.json()),
+    fetch(API_REQUEST.comedy).then((res) => res.json()),
+    fetch(API_REQUEST.family).then((res) => res.json()),
+    fetch(API_REQUEST.history).then((res) => res.json()),
+  ]);
+
   return {
     props: {
       trending: trending.results,
