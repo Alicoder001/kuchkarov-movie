@@ -17,3 +17,6 @@ export interface IMovie {
   original_name: string;
   name: string;
 }
+export interface Element {
+  type: "Trailer" | "Clip" | "Opening Credits" | "Behind the Scenes";
+}
