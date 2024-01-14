@@ -42,6 +42,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       signIn,
       signUp,
       error,
+      setIsLoading,
     }),
     [user, isLoading, error]
   );

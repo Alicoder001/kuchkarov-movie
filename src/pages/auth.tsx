@@ -6,9 +6,11 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { AuthContext, AuthContextState } from "src/context/auth.context";
 import { useRouter } from "next/router";
+import { useAuth } from "src/hooks/useAuth";
 const Auth = () => {
   const router = useRouter();
   const [auth, setAuth] = useState<"signin" | "signup">("signin");
+  const { setIsLoading } = useAuth();
   const { user, error, isLoading, logOut, signIn, signUp } =
     useContext(AuthContext);
   const toggleAuth = (state: "signin" | "signup") => {
@@ -19,10 +21,18 @@ const Auth = () => {
     router.push("/");
   }
 
-  const onSubmit = (formData: { email: string; password: string }) => {
+  const onSubmit = async (formData: { email: string; password: string }) => {
     if (auth === "signin") {
-      signIn(formData.email, formData.password);
-    } else signUp(formData.email, formData.password);
+      await signIn(formData.email, formData.password);
+    } else {
+      setIsLoading(true);
+      await fetch("/api/customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+      await signUp(formData.email, formData.password);
+    }
   };
   const validation = Yup.object({
     email: Yup.string()
