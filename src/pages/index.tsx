@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { Header, Hero, Modal, Row, SubscriptionPlan } from "src/components";
-import { IMovie } from "src/interfaces/app.interface";
+import { IMovie, Product } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
 import { useInfoState } from "src/store";
 
@@ -14,11 +14,13 @@ export default function Home({
   documentary,
   family,
   history,
+  products,
 }: HomeProps): JSX.Element {
+  console.log(products);
   const { setModal, modal } = useInfoState();
   const subscription = false;
   if (!subscription) {
-    return <SubscriptionPlan />;
+    return <SubscriptionPlan products={products} />;
   }
   return (
     <div
@@ -71,6 +73,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     comedy,
     family,
     history,
+    { products },
   ] = await Promise.all([
     fetch(API_REQUEST.trending).then((res) => res.json()),
     fetch(API_REQUEST.top_rated).then((res) => res.json()),
@@ -80,6 +83,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     fetch(API_REQUEST.comedy).then((res) => res.json()),
     fetch(API_REQUEST.family).then((res) => res.json()),
     fetch(API_REQUEST.history).then((res) => res.json()),
+    fetch(API_REQUEST.product_list).then((res) => res.json()),
   ]);
 
   return {
@@ -92,6 +96,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
       comedy: comedy.results,
       family: family.results,
       history: history.results,
+      products: products.data,
     },
   };
 };
@@ -104,4 +109,5 @@ interface HomeProps {
   comedy: IMovie[];
   family: IMovie[];
   history: IMovie[];
+  products: Product[];
 }
