@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { Header, Hero, Modal, Row } from "src/components";
+import { Header, Hero, Modal, Row, SubscriptionPlan } from "src/components";
 import { IMovie } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
 import { useInfoState } from "src/store";
@@ -16,7 +16,10 @@ export default function Home({
   history,
 }: HomeProps): JSX.Element {
   const { setModal, modal } = useInfoState();
-  console.log(modal);
+  const subscription = false;
+  if (!subscription) {
+    return <SubscriptionPlan />;
+  }
   return (
     <div
       className={`relative min-h-screen ${

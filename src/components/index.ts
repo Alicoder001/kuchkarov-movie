@@ -4,3 +4,4 @@ export { default as Row } from "./row/row";
 export { default as Thumbnail } from "./thumbnail/thumbnail";
 export { default as TextFild } from "./text-fild/text-fild";
 export { default as Modal } from "./modal/modal";
+export { default as SubscriptionPlan } from "./subscription-plan/subscription-plan";

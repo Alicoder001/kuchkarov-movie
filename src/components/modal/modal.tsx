@@ -1,6 +1,6 @@
 import MuiModal from "@mui/material/Modal";
 import { useInfoState } from "src/store";
-import { FaPlay, FaTimes } from "react-icons/fa";
+import { FaPause, FaPlay, FaTimes } from "react-icons/fa";
 import { API_REQUEST } from "src/services/api.service";
 import { useEffect, useState } from "react";
 import { Element } from "src/interfaces/app.interface";
@@ -9,6 +9,7 @@ import { BiPlus } from "react-icons/bi";
 import { BsVolumeDown, BsVolumeMute } from "react-icons/bs";
 import { AiOutlineLike } from "react-icons/ai";
 const Modal = () => {
+  const [playing, setPlaying] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(true);
   const [trailer, setTrailer] = useState<string>("");
   const { modal, setModal, currentMovie } = useInfoState();
@@ -52,7 +53,7 @@ const Modal = () => {
             url={`https://www.youtube.com/watch?v=${trailer}`}
             width={"100%"}
             height={"100%"}
-            playing
+            playing={playing}
             muted={isMute}
             style={{
               position: "absolute",
@@ -60,10 +61,25 @@ const Modal = () => {
               left: 0,
             }}
           />
-          <div className="absolute bottom-10 flex items-center w-full justify-between  ">
+          <div className="absolute bottom-10 left-10 flex items-center w-full justify-between  ">
             <div className="flex space-x-2">
-              <button className="flex items-center gap-x-2 rounded bg-white px-8 py-4 text-xl font-bold text-black transition hover:bg-[#e6e6e6]">
-                <FaPlay className="h-7 w-7 text-black" />
+              <button
+                onClick={() => {
+                  setPlaying(!playing);
+                }}
+                className="flex items-center gap-x-2 rounded bg-white px-8 py-4 text-xl font-bold text-black transition hover:bg-[#e6e6e6]"
+              >
+                {!playing ? (
+                  <>
+                    <FaPlay className="h-7 w-7 text-black" />
+                    Play
+                  </>
+                ) : (
+                  <>
+                    <FaPause className="h-7 w-7 text-black" />
+                    Pause
+                  </>
+                )}
               </button>
               <button className="modalButton">
                 <BiPlus className="w-7 h-7" />
