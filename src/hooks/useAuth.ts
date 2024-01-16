@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { auth } from "src/firebase";
@@ -19,6 +20,15 @@ export const useAuth = () => {
     setIsLoading(true);
     await createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
+        fetch("/api/customer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: res.user.email,
+            user_id: res.user.uid,
+          }),
+        });
+        Cookies.set("user_id", res.user.uid);
         setUser(res.user);
         router.push("/");
       })
@@ -34,7 +44,9 @@ export const useAuth = () => {
       .then((res) => {
         setUser(res.user);
         router.push("/");
+        Cookies.set("user_id", res.user.uid);
       })
+
       .catch((error) => setError(error.message))
       .finally(() => {
         setIsLoading(false);
@@ -46,6 +58,7 @@ export const useAuth = () => {
     await signOut(auth)
       .then(() => {
         setUser(null);
+        Cookies.remove("user_id");
       })
       .catch((error) => {
         setError(error.message);

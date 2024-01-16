@@ -26,11 +26,6 @@ const Auth = () => {
       await signIn(formData.email, formData.password);
     } else {
       setIsLoading(true);
-      await fetch("/api/customer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email }),
-      });
       await signUp(formData.email, formData.password);
     }
   };

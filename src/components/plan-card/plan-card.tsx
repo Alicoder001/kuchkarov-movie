@@ -56,7 +56,7 @@ const PlanCard = ({ product }: PlanCardProps) => {
         }}
         className="mt-4 w-full bg-[#e10856] py-4 rounded hover:opacity-80 font-semibold"
       >
-        {isLoading ? "Loading..." : "BUY PLAN"}
+        {isLoading ? "Loading..." : " BUY PLAN"}
       </button>
       <div className="my-4 flex flex-col space-y-2">
         {product.metadata.adv.split(", ").map((c, id) => {
