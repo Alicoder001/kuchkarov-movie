@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { AuthContext, AuthContextState } from "src/context/auth.context";
 import { useRouter } from "next/router";
 import { useAuth } from "src/hooks/useAuth";
+import { GetServerSideProps } from "next";
 const Auth = () => {
   const router = useRouter();
   const [auth, setAuth] = useState<"signin" | "signup">("signin");
@@ -16,11 +17,6 @@ const Auth = () => {
   const toggleAuth = (state: "signin" | "signup") => {
     setAuth(state);
   };
-
-  if (user) {
-    router.push("/");
-  }
-
   const onSubmit = async (formData: { email: string; password: string }) => {
     if (auth === "signin") {
       await signIn(formData.email, formData.password);
@@ -128,3 +124,15 @@ const Auth = () => {
 };
 
 export default Auth;
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const user_id = req.cookies.user_id;
+  if (user_id) {
+    return {
+      redirect: { destination: "/", permanent: false },
+    };
+  }
+  return {
+    props: {},
+  };
+};

@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import { redirect } from "next/dist/server/api-utils";
 import Head from "next/head";
 import { Header, Hero, Modal, Row, SubscriptionPlan } from "src/components";
 import { IMovie, Product } from "src/interfaces/app.interface";
@@ -17,8 +18,7 @@ export default function Home({
   products,
   subscription,
 }: HomeProps): JSX.Element {
-  console.log(products);
-  const { setModal, modal } = useInfoState();
+  const { modal } = useInfoState();
   if (!subscription.length) {
     return <SubscriptionPlan products={products} />;
   }
@@ -67,6 +67,11 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
   req,
 }) => {
   const user_id = req.cookies.user_id;
+  if (!user_id) {
+    return {
+      redirect: { destination: "/auth", permanent: false },
+    };
+  }
   const [
     trending,
     topRated,
