@@ -1,11 +1,16 @@
+import moment from "moment";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineSubscriptions } from "react-icons/md";
 import { MembershipPlan } from "src/components";
+import { Subscription } from "src/interfaces/app.interface";
+import { API_REQUEST } from "src/services/api.service";
 
-const Account = () => {
+const Account = ({ subscription }: AccountProps) => {
+  console.log(subscription);
   return (
     <>
       <Head>
@@ -39,12 +44,15 @@ const Account = () => {
           <div className="-ml-1 flex items-center gap-x-1.5">
             <MdOutlineSubscriptions className="w-5 h-5 text-red-500" />
             <p className="text-md font-semibold text-[#555]">
-              Member since 15 February, 2023
+              Member since{" "}
+              {`${moment(+subscription.current_period_start * 1000).format(
+                "DD MMM, yyyy"
+              )}`}
             </p>
           </div>
         </div>
 
-        <MembershipPlan />
+        <MembershipPlan subscription={subscription} />
 
         <div className="mt-6 grid grid-cols-1 gap-x-4 border px-4 py-4 md:grid-cols-4 md:bordder-x-0 md:border-t md:border-b-0 md:pb-0">
           <h4 className="text-lg text-[gray]">Plan Details</h4>
@@ -66,3 +74,28 @@ const Account = () => {
 };
 
 export default Account;
+
+export const getServerSideProps: GetServerSideProps<AccountProps> = async ({
+  req,
+}) => {
+  const user_id = req.cookies.user_id;
+  if (!user_id) {
+    return {
+      redirect: {
+        destination: "/auth",
+        permanent: false,
+      },
+    };
+  }
+  const { subscription } = await fetch(
+    `${API_REQUEST.subscription}/${user_id}`
+  ).then((res) => res.json());
+  return {
+    props: {
+      subscription: subscription.data[0],
+    },
+  };
+};
+interface AccountProps {
+  subscription: Subscription;
+}
