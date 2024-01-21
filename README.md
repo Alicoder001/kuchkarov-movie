@@ -6,7 +6,7 @@ Full stack app with subscription plan. The customer can log in and register on t
 
 # Demo
 
-https://kuchkarov-movie.vercel.app/
+https://kuchkarov-movie.vercel.app
 
 # Stack
 
