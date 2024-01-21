@@ -2,12 +2,15 @@ import MuiModal from "@mui/material/Modal";
 import { useInfoState } from "src/store";
 import { FaPause, FaPlay, FaTimes } from "react-icons/fa";
 import { API_REQUEST } from "src/services/api.service";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Element } from "src/interfaces/app.interface";
 import ReactPlayer from "react-player";
 import { BiPlus } from "react-icons/bi";
 import { BsVolumeDown, BsVolumeMute } from "react-icons/bs";
 import { AiOutlineLike } from "react-icons/ai";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "src/firebase";
+import { AuthContext } from "src/context/auth.context";
 const Modal = () => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(true);
@@ -16,6 +19,7 @@ const Modal = () => {
   const handleClose = () => {
     setModal(false);
   };
+  const { user } = useContext(AuthContext);
   const api = `${API_REQUEST.base_url}/${
     currentMovie?.media_type === "tv" ? "tv" : "movie"
   }/${currentMovie.id}/videos?api_key=${API_REQUEST.api_key}&language=en-US`;
@@ -33,6 +37,17 @@ const Modal = () => {
 
     fetchVideoData();
   }, [currentMovie]);
+  const addProduct = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "list"), {
+        userId: user?.uid,
+        product: currentMovie,
+      });
+      console.log(docRef);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <MuiModal
       open={modal}
@@ -82,7 +97,7 @@ const Modal = () => {
                 )}
               </button>
               <button className="modalButton">
-                <BiPlus className="w-7 h-7" />
+                <BiPlus onClick={addProduct} className="w-7 h-7" />
               </button>
               <button className="modalButton">
                 <AiOutlineLike className="w-7 h-7" />

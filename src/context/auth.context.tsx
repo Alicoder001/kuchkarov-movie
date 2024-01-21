@@ -46,7 +46,6 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     }),
     [user, isLoading, error]
   );
-  console.log(isLoading);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {

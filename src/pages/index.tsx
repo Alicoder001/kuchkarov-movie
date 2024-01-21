@@ -1,7 +1,9 @@
 import { GetServerSideProps } from "next";
 import { redirect } from "next/dist/server/api-utils";
 import Head from "next/head";
+import { useEffect } from "react";
 import { Header, Hero, Modal, Row, SubscriptionPlan } from "src/components";
+import { getList } from "src/helpers/lists";
 import { IMovie, Product } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
 import { useInfoState } from "src/store";
@@ -17,7 +19,11 @@ export default function Home({
   history,
   products,
   subscription,
+  user_id,
 }: HomeProps): JSX.Element {
+  useEffect(() => {
+    getList(user_id);
+  }, []);
   const { modal } = useInfoState();
   if (!subscription.length) {
     return <SubscriptionPlan products={products} />;
@@ -95,7 +101,6 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
     fetch(API_REQUEST.product_list).then((res) => res.json()),
     fetch(`${API_REQUEST.subscription}/${user_id}`).then((res) => res.json()),
   ]);
-
   return {
     props: {
       trending: trending.results,
@@ -108,6 +113,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
       history: history.results,
       products: products.data,
       subscription: subscription?.data,
+      user_id,
     },
   };
 };
@@ -122,4 +128,5 @@ interface HomeProps {
   history: IMovie[];
   products: Product[];
   subscription: any;
+  user_id: string;
 }
