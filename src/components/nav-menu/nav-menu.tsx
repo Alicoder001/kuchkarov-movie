@@ -4,7 +4,7 @@ import React, { useState } from "react";
 const NavMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleOpen = (evt: MouseEvent<HTMLButtonElement>) => {
+  const handleOpen = (evt: any) => {
     setAnchorEl(evt.currentTarget);
   };
   const handleClose = () => {
