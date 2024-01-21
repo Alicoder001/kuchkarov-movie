@@ -10,6 +10,5 @@ export const getList = async (userId?: string) => {
       myList.push(item.data() as MyList);
     }
   });
-  console.log(myList);
-  //   return myList;
+  return myList;
 };

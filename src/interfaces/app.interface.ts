@@ -68,6 +68,6 @@ export interface Subscription {
   };
 }
 export interface MyList {
-  userId: string;
-  product: IMovie;
+  userId?: string;
+  product?: IMovie;
 }

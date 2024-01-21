@@ -1,4 +1,5 @@
 import MuiModal from "@mui/material/Modal";
+import CloseIcon from "@mui/icons-material/Close";
 import { useInfoState } from "src/store";
 import { FaPause, FaPlay, FaTimes } from "react-icons/fa";
 import { API_REQUEST } from "src/services/api.service";
@@ -11,19 +12,34 @@ import { AiOutlineLike } from "react-icons/ai";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "src/firebase";
 import { AuthContext } from "src/context/auth.context";
+
+import { useRouter } from "next/router";
+import { Button, IconButton, Snackbar } from "@mui/material";
 const Modal = () => {
+  const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(true);
   const [trailer, setTrailer] = useState<string>("");
   const { modal, setModal, currentMovie } = useInfoState();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const handleClose = () => {
     setModal(false);
+  };
+  const handleCloses = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
   const { user } = useContext(AuthContext);
   const api = `${API_REQUEST.base_url}/${
     currentMovie?.media_type === "tv" ? "tv" : "movie"
   }/${currentMovie.id}/videos?api_key=${API_REQUEST.api_key}&language=en-US`;
-  console.log(trailer);
   useEffect(() => {
     const fetchVideoData = async () => {
       const data = await fetch(api).then((res) => res.json());
@@ -37,15 +53,32 @@ const Modal = () => {
 
     fetchVideoData();
   }, [currentMovie]);
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloses}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
   const addProduct = async () => {
+    setIsLoading(true);
     try {
       const docRef = await addDoc(collection(db, "list"), {
         userId: user?.uid,
         product: currentMovie,
       });
       console.log(docRef);
+      setIsLoading(false);
+      router.replace(router.asPath);
+      setOpen(true);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   return (
@@ -55,6 +88,13 @@ const Modal = () => {
       className="fixed !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl overflow-hidden overflow-y-scroll scrollbar-hide"
     >
       <>
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleCloses}
+          message="SUCCES"
+          action={action}
+        />
         <button
           onClick={() => {
             setModal(false);
@@ -97,7 +137,11 @@ const Modal = () => {
                 )}
               </button>
               <button className="modalButton">
-                <BiPlus onClick={addProduct} className="w-7 h-7" />
+                {isLoading ? (
+                  "..."
+                ) : (
+                  <BiPlus onClick={addProduct} className="w-7 h-7" />
+                )}
               </button>
               <button className="modalButton">
                 <AiOutlineLike className="w-7 h-7" />

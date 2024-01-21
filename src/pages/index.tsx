@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 import { Header, Hero, Modal, Row, SubscriptionPlan } from "src/components";
 import { getList } from "src/helpers/lists";
-import { IMovie, Product } from "src/interfaces/app.interface";
+import { IMovie, MyList, Product } from "src/interfaces/app.interface";
 import { API_REQUEST } from "src/services/api.service";
 import { useInfoState } from "src/store";
 
@@ -19,15 +19,14 @@ export default function Home({
   history,
   products,
   subscription,
-  user_id,
+  list,
 }: HomeProps): JSX.Element {
-  useEffect(() => {
-    getList(user_id);
-  }, []);
+  console.log(list);
   const { modal } = useInfoState();
   if (!subscription.length) {
     return <SubscriptionPlan products={products} />;
   }
+
   return (
     <div
       className={`relative min-h-screen ${
@@ -49,6 +48,11 @@ export default function Home({
         <section>
           <Row title="Feature Tv Show" isBig={true} movies={tvTopRated}></Row>
         </section>
+        {list.length && (
+          <section>
+            <Row title="My List" movies={list}></Row>
+          </section>
+        )}
         <section>
           <Row title="Popular films" movies={popular}></Row>
         </section>
@@ -101,6 +105,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
     fetch(API_REQUEST.product_list).then((res) => res.json()),
     fetch(`${API_REQUEST.subscription}/${user_id}`).then((res) => res.json()),
   ]);
+  const myList: MyList[] = await getList(user_id);
   return {
     props: {
       trending: trending.results,
@@ -114,6 +119,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
       products: products.data,
       subscription: subscription?.data,
       user_id,
+      list: myList?.map((item) => item.product as IMovie),
     },
   };
 };
@@ -128,5 +134,6 @@ interface HomeProps {
   history: IMovie[];
   products: Product[];
   subscription: any;
-  user_id: string;
+  user_id?: string;
+  list: IMovie[];
 }
