@@ -29,7 +29,7 @@ export default function Home({
 
   return (
     <div
-      className={`relative min-h-screen ${
+      className={`relative min-h-screen bg-gradient-to-b from-gray-900/70 to-[#010511] ${
         modal && "!h-screen overflow-hidden"
       }`}
     >
